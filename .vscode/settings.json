@@ -1,0 +1,4 @@
+{
+    "dotnet-test-explorer.testProjectPath": "AdventOfCode2022.csproj",
+    "dotnet-test-explorer.autoWatch": true
+}
