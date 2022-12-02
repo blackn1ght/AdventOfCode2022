@@ -1,26 +1,13 @@
-using System;
-
 namespace AdventOfCode2022;
 
-public class Fixture
+public static class ChallengeDataReader
 {
-    public string[] Input { get; private set; }
-    public string[] Example { get; private set; }
-
-    public Fixture SetupForDay(int day)
-    {
-        Input = ReadFile(day, "input.txt");
-        Example = ReadFile(day, "example.txt");
-
-        return this;
-    }
-
-    public string[] GetData(InputTypes inputType)
+    public static string[] GetDataForDay(int day, InputTypes inputType)
     {
         return inputType switch 
         {
-            InputTypes.Input => Input,
-            InputTypes.Example => Example,
+            InputTypes.Input => ReadFile(day, "input.txt"),
+            InputTypes.Example => ReadFile(day, "example.txt"),
             _ => throw new ArgumentException($"Invalid inputType {Enum.GetName(inputType)}")
         };
     }

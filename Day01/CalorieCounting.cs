@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 namespace AdventOfCode2022.Day01;
 
 public class CalorieCounting : ChallengeBase
