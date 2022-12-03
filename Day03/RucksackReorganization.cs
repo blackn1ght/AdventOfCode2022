@@ -20,5 +20,12 @@ public class RucksackReorganization : ChallengeBase
 
     private static int NumericalValueOfItem(char item) => (int)item >= 65 && (int)item <= 90 ? (int)item - 38 : (int)item - 96;
 
-    protected override int Part2() => 0;
+    protected override int Part2() => ChallengeDataRows
+        .Chunk(3)
+        .Sum(groupOfThree => groupOfThree
+            .OrderBy(row => row.Length)
+            .First()
+            .Distinct()
+            .Sum(c => groupOfThree.All(x => x.Contains(c)) ? NumericalValueOfItem(c) : 0)
+        );
 }
