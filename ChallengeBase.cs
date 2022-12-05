@@ -1,6 +1,6 @@
 namespace AdventOfCode2022;
 
-public abstract class ChallengeBase
+public abstract class ChallengeBase<T>
 {
     protected readonly string[] ChallengeDataRows;
 
@@ -9,7 +9,7 @@ public abstract class ChallengeBase
         ChallengeDataRows = data;
     }
 
-    public int GetAnswerForPart(ChallengePart part)
+    public T GetAnswerForPart(ChallengePart part)
     {
         return part switch
         {
@@ -18,6 +18,6 @@ public abstract class ChallengeBase
         };
     }
 
-    protected abstract int Part1();
-    protected abstract int Part2();
+    protected abstract T Part1();
+    protected abstract T Part2();
 }

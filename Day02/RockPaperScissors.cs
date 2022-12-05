@@ -1,6 +1,6 @@
 namespace AdventOfCode2022.Day02;
 
-public class RockPaperScissors : ChallengeBase
+public class RockPaperScissors : ChallengeBase<int>
 {
     private enum Shape
     {

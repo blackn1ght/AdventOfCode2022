@@ -1,6 +1,6 @@
 namespace AdventOfCode2022.Day01;
 
-public class CalorieCounting : ChallengeBase
+public class CalorieCounting : ChallengeBase<int>
 {
     public CalorieCounting(string[] data) : base(data)
     {

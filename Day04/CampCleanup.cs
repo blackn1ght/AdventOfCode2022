@@ -1,6 +1,6 @@
 namespace AdventOfCode2022.Day04;
 
-public class CampCleanup : ChallengeBase
+public class CampCleanup : ChallengeBase<int>
 {
     public CampCleanup(string[] data) : base(data) {}
 

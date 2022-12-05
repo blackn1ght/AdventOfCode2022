@@ -1,6 +1,6 @@
 namespace AdventOfCode2022.Day03;
 
-public class RucksackReorganization : ChallengeBase
+public class RucksackReorganization : ChallengeBase<int>
 {
     public RucksackReorganization(string[] data) : base(data)
     {
