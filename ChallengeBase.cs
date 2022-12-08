@@ -14,7 +14,8 @@ public abstract class ChallengeBase<T>
         return part switch
         {
             ChallengePart.Part1 => Part1(),
-            ChallengePart.Part2 => Part2()
+            ChallengePart.Part2 => Part2(),
+            _ => throw new ArgumentException()
         };
     }
 
