@@ -87,92 +87,51 @@ public class TreetopTreeHouse : ChallengeBase<int>
     {
         var thisTreeHeight = _treeGrid[y][x];
 
-        var scores = new List<int>();
+        var leftScore = x;
+        var rightScore = (_treeGrid[x].Length - 1) - x;
+        var upScore = y;
+        var downScore = (_treeGrid.Length - 1) - y;
 
-        if (y > 0)
+        for (var up = y - 1; up >= 0; up--)
         {
-            var upBlocked = false;
-            for (var up = y - 1; up >= 0; up--)
+            var otherTreeHeight = _treeGrid[up][x];
+            if (otherTreeHeight >= thisTreeHeight)
             {
-                var otherTreeHeight = _treeGrid[up][x];
-                if (otherTreeHeight >= thisTreeHeight)
-                {
-                    scores.Add(y - up);
-                    upBlocked = true;
-                    break;
-                }
+                upScore = y - up;
+                break;
             }
-
-            if (!upBlocked) scores.Add(y);
-        }
-        else
-        {
-            scores.Add(0);
         }
 
-        if (y < _treeGrid.Length - 1)
+        for (var down = y + 1; down < _treeGrid.Length; down++)
         {
-            var downBlocked = false;
-            for (var down = y + 1; down < _treeGrid.Length; down++)
+            var otherTreeHeight = _treeGrid[down][x];
+            if (otherTreeHeight >= thisTreeHeight)
             {
-                var otherTreeHeight = _treeGrid[down][x];
-                if (otherTreeHeight >= thisTreeHeight)
-                {
-                    scores.Add(down - y);
-                    downBlocked = true;
-                    break;
-                }
+                downScore = down - y;
+                break;
             }
-
-            if (!downBlocked) scores.Add((_treeGrid.Length - 1) - y);
-        }
-        else
-        {
-            scores.Add(0);
         }
 
-        if (x < _treeGrid[y].Length)
+        for (var right = x + 1; right < _treeGrid[y].Length; right++)
         {
-            var rightBlocked = false;
-            for (var right = x + 1; right < _treeGrid[y].Length; right++)
+            var otherTreeHeight = _treeGrid[y][right];
+            if (otherTreeHeight >= thisTreeHeight)
             {
-                var otherTreeHeight = _treeGrid[y][right];
-                if (otherTreeHeight >= thisTreeHeight)
-                {
-                    scores.Add(right - x);
-                    rightBlocked = true;
-                    break;
-                }
+                rightScore = right - x;
+                break;
             }
-
-            if (!rightBlocked) scores.Add((_treeGrid[x].Length - 1) - x);
-        }
-        else
-        {
-            scores.Add(0);
         }
 
-        if (x > 0)
+        for (var left = x - 1; left >= 0; left--)
         {
-            var leftBlocked = false;
-            for (var left = x - 1; left >= 0; left--)
+            var otherTreeHeight = _treeGrid[y][left];
+            if (otherTreeHeight >= thisTreeHeight)
             {
-                var otherTreeHeight = _treeGrid[y][left];
-                if (otherTreeHeight >= thisTreeHeight)
-                {
-                    scores.Add(x - left);
-                    leftBlocked = true;
-                    break;
-                }
+                leftScore = x - left;
+                break;
             }
-
-            if (!leftBlocked) scores.Add(x);
-        }
-        else
-        {
-            scores.Add(0);
         }
 
-        return scores.Skip(1).Aggregate(scores[0], (prev, curr) => prev * curr);
+        return upScore * rightScore * downScore * leftScore;
     }
 }
