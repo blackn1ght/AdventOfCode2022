@@ -5,18 +5,63 @@ public class RopeBridge : ChallengeBase<int>
     {
     }
 
-    protected override int Part1()
+    protected override int Part1() => GetNumberOfTimesTailVisitedUniquePositions(2);
+
+    protected override int Part2() => GetNumberOfTimesTailVisitedUniquePositions(10);
+
+    private Coordinate MoveKnot(Coordinate knotInFront, Coordinate knot)
     {
-        var results = new Dictionary<(int x, int y),int>
+        var xDiff = knotInFront.X - knot.X;
+        var yDiff = knotInFront.Y - knot.Y;
+
+        // Tail is on top of head, or directly next to it
+        if (yDiff == 0 && xDiff == 0) return knot;
+        if (yDiff == 0 && (xDiff == 1 || xDiff == -1)) return knot;
+        if ((yDiff == 1 || yDiff == -1) && xDiff == 0) return knot;
+
+        // Same y, moved right
+        if (yDiff == 0 && xDiff > 1) return new Coordinate(knot.X+1, knot.Y);
+
+        // Same y, moved left
+        if (yDiff == 0 && xDiff < 1) return new Coordinate(knot.X-1, knot.Y);
+
+        // Same x, moved up
+        if (yDiff > 1 && xDiff == 0) return new Coordinate(knot.X, knot.Y+1);
+
+        // Same x, moved Down
+        if (yDiff < 1 && xDiff == 0) return new Coordinate(knot.X, knot.Y-1);
+
+        // Diag nearby, do nothing
+        if ((yDiff == 1 || yDiff == -1) && (xDiff == 1 || xDiff == -1)) return knot;
+
+        // 2 to the right, 1 up
+        if (xDiff >= 1 && yDiff >= 1) return new Coordinate(knot.X+1, knot.Y+1);
+
+        // 2 to the right, 1 down
+        if (xDiff >= 1 && yDiff <= 1) return new Coordinate(knot.X+1, knot.Y-1);
+
+        // 2 to the left, 1 up
+        if (xDiff < 1 && yDiff >= 1) return new Coordinate(knot.X-1, knot.Y+1);
+
+        // 2 to the left, 1 down
+        if (xDiff < 1 && yDiff < 1) return new Coordinate(knot.X-1, knot.Y-1);
+
+        return knot;
+    }
+
+    private int GetNumberOfTimesTailVisitedUniquePositions(int knotCount)
+    {
+        var tailPositions = new HashSet<Coordinate>
         {
-            { (0,0), 1}
+            new Coordinate(0,0)
         };
 
-        int tailX = 0;
-        int tailY = 0;
+        var knots = Enumerable.Range(0, knotCount)
+            .Select(_ => new Coordinate(0, 0))
+            .ToList();
 
-        int headX = 0;
-        int headY = 0;
+        var head = knots.First();
+        var tail = knots.Last();
 
         foreach (var input in ChallengeDataRows)
         {
@@ -26,75 +71,49 @@ public class RopeBridge : ChallengeBase<int>
 
             for (var i = 0; i < move; i++)
             {
-                if (direction == "R") headX++;
-                if (direction == "L") headX--;
-                if (direction == "U") headY++;
-                if (direction == "D") headY--;
+                if (direction == "R") head.X++;
+                if (direction == "L") head.X--;
+                if (direction == "U") head.Y++;
+                if (direction == "D") head.Y--;
 
-                var (resultX, resultY) = MoveTail(headX, headY, tailX, tailY);
-                if (resultX != tailX || resultY != tailY)
+                for (var knotIndex = 1; knotIndex < knotCount; knotIndex++)
                 {
-                    tailX = resultX;
-                    tailY = resultY;
+                    var previousKnot = knots[knotIndex - 1];
+                    var currentKnot = knots[knotIndex];
 
-                    results.Increment((resultX, resultY));
+                    var moveResult = MoveKnot(previousKnot, currentKnot);
+                    if (moveResult.X != currentKnot.X || moveResult.Y != currentKnot.Y)
+                    {
+                        knots[knotIndex] = moveResult;
+
+                        if (knotIndex == knotCount - 1) tailPositions.Add(moveResult);
+                    }
                 }
             }
+
         }
 
-        return results.Count;
+        return tailPositions.Count;
     }
-
-    private (int x, int y) MoveTail(int headX, int headY, int tailX, int tailY)
-    {
-        var xDiff = headX - tailX;
-        var yDiff = headY - tailY;
-
-        // Tail is on top of head, or directly next to it
-        if (yDiff == 0 && xDiff == 0) return (tailX, tailY);
-        if (yDiff == 0 && (xDiff == 1 || xDiff == -1)) return (tailX, tailY);
-        if ((yDiff == 1 || yDiff == -1) && xDiff == 0) return (tailX, tailY);
-
-        // Same y, moved right
-        if (yDiff == 0 && xDiff > 1) return (tailX+1, tailY);
-
-        // Same y, moved left
-        if (yDiff == 0 && xDiff < 1) return (tailX-1, tailY);
-
-        // Same x, moved up
-        if (yDiff > 1 && xDiff == 0) return (tailX, tailY+1);
-
-        // Same x, moved Down
-        if (yDiff < 1 && xDiff == 0) return (tailX, tailY-1);
-
-        // Diag nearby, do nothing
-        if ((yDiff == 1 || yDiff == -1) && (xDiff == 1 || xDiff == -1)) return (tailX, tailY);
-
-        // 2 to the right, 1 up
-        if (xDiff >= 1 && yDiff >= 1) return (tailX+1, tailY+1);
-
-        // 2 to the right, 1 down
-        if (xDiff >= 1 && yDiff <= 1) return (tailX+1, tailY-1);
-
-        // 2 to the left, 1 up
-        if (xDiff < 1 && yDiff >= 1) return (tailX-1, tailY+1);
-
-        // 2 to the left, 1 down
-        if (xDiff < 1 && yDiff < 1) return (tailX-1, tailY-1);
-
-        return (tailX, tailY);
-    }
-
-
-    protected override int Part2() => throw new NotImplementedException();
 }
 
-public static class DictionaryExtensions
+internal class Coordinate
 {
-    public static void Increment(this Dictionary<(int x, int y), int> dictionary, (int x, int y) key)
+    public Coordinate(int x, int y)
     {
-        if (!dictionary.ContainsKey(key)) dictionary.Add(key, 0);
-
-        dictionary[key]++;
+        X = x;
+        Y = y;
     }
+
+    public int X { get; set; }
+    public int Y { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        var coord = (Coordinate)obj;
+
+        return coord != null && coord.X == X && coord.Y == Y;
+    }
+
+    public override int GetHashCode() => this.X.GetHashCode() ^ this.Y.GetHashCode();
 }
