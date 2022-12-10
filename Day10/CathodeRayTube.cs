@@ -63,7 +63,7 @@ public class CathodeRayTube : ChallengeBase<int>
                 row++;
                 cycle = 0;
             }
-            display[row] = $"{display[row]}{(x == cycle || x == cycle - 1 || x == cycle + 1 ? "#" : ".")}";
+            display[row] = $"{display[row]}{(x == cycle || x == cycle - 1 || x == cycle + 1 ? "▓" : " ")}";
             cycle++;
         };
 
@@ -85,6 +85,8 @@ public class CathodeRayTube : ChallengeBase<int>
                 executeCycle();
             }
         }
+
+        display.ForEach(row => Console.WriteLine(row));
 
         return 0;
     }
