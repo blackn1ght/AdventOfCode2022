@@ -67,32 +67,20 @@ public class RopeBridge : ChallengeBase<int>
         // Same x, moved Down
         if (yDiff < 1 && xDiff == 0) return (tailX, tailY-1);
 
-        // Diagnolly nearby, do nothing
+        // Diag nearby, do nothing
         if ((yDiff == 1 || yDiff == -1) && (xDiff == 1 || xDiff == -1)) return (tailX, tailY);
 
-        // 1 to the right, 2 up
-        if (xDiff == 1 && yDiff > 1) return (tailX+1, tailY+1);
-
-        // 1 to the left, 2 up
-        if (xDiff == -1 && yDiff > 1) return (tailX-1, tailY+1);
-
-        // 1 to the right, 2 down
-        if (xDiff == 1 && yDiff < 1) return (tailX+1, tailY-1);
-
-        // 1 to the left, 2 down
-        if (xDiff == -1 && yDiff < 1) return (tailX-1, tailY-1);
-
         // 2 to the right, 1 up
-        if (xDiff > 1 && yDiff == 1) return (tailX+1, tailY+1);
+        if (xDiff >= 1 && yDiff >= 1) return (tailX+1, tailY+1);
 
         // 2 to the right, 1 down
-        if (xDiff > 1 && yDiff == -1) return (tailX+1, tailY-1);
+        if (xDiff >= 1 && yDiff <= 1) return (tailX+1, tailY-1);
 
         // 2 to the left, 1 up
-        if (xDiff < 1 && yDiff == 1) return (tailX-1, tailY+1);
+        if (xDiff < 1 && yDiff >= 1) return (tailX-1, tailY+1);
 
         // 2 to the left, 1 down
-        if (xDiff < 1 && yDiff == -1) return (tailX-1, tailY-1);
+        if (xDiff < 1 && yDiff < 1) return (tailX-1, tailY-1);
 
         return (tailX, tailY);
     }
