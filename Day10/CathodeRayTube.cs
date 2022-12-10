@@ -45,5 +45,47 @@ public class CathodeRayTube : ChallengeBase<int>
         return signalStrengths.Sum();
     }
 
-    protected override int Part2() => throw new NotImplementedException();
+    protected override int Part2()
+    {
+        var cycle = 0;
+        var row = 0;
+        var x = 1;
+
+        var display = Enumerable
+            .Range(0, 6)
+            .Select(_ => "")
+            .ToList();
+
+        Action executeCycle = () => 
+        {
+            if (cycle > 39)
+            {
+                row++;
+                cycle = 0;
+            }
+            display[row] = $"{display[row]}{(x == cycle || x == cycle - 1 || x == cycle + 1 ? "#" : ".")}";
+            cycle++;
+        };
+
+        foreach (var instruction in ChallengeDataRows)
+        {
+            var details = instruction.Split(' ');
+
+            if (details[0] == "addx")
+            {
+                for (var i = 0 ; i < 2; i++)
+                {
+                    executeCycle();
+                }
+                
+                x += int.Parse(details[1]);
+            }
+            else
+            { 
+                executeCycle();
+            }
+        }
+
+        return 0;
+    }
 }
