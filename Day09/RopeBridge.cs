@@ -1,7 +1,8 @@
 namespace AdventOfCode2022.Day09;
 
 public class RopeBridge : ChallengeBase<int>
-{   public RopeBridge(string[] data) : base(data)
+{   
+    public RopeBridge(string[] data) : base(data)
     {
     }
 
