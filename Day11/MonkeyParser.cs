@@ -1,22 +1,24 @@
+using System.Numerics;
+
 namespace AdventOfCode2022.Day11;
 
 internal static class MonkeyParser
 {
-    public static Monkey CreateMonkey(string[] monkeyLines)
+    public static Monkey CreateMonkey(string[] monkeyLines, bool damageRelief)
     {
         var startingItems = ParseStartingItems(monkeyLines);
         var operation = ParseOperation(monkeyLines);
         var test = ParseTest(monkeyLines);
 
-        return new Monkey(startingItems, operation, test);
+        return new Monkey(startingItems, operation, test, damageRelief);
     }
 
-    private static List<int> ParseStartingItems(string[] monkeyLines)
+    private static List<BigInteger> ParseStartingItems(string[] monkeyLines)
     {
         return monkeyLines[1]
             .Split(':')[1]
             .Split(',')
-            .Select(value => int.Parse(value.Trim()))
+            .Select(value => BigInteger.Parse(value.Trim()))
             .ToList();
     }
 
