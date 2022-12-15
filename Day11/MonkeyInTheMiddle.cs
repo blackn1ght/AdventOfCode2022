@@ -2,23 +2,27 @@ using System.Numerics;
 
 namespace AdventOfCode2022.Day11;
 
-public class MonkeyInTheMiddle : ChallengeBase<BigInteger>
+public class MonkeyInTheMiddle : ChallengeBase<long>
 {   
     public MonkeyInTheMiddle(string[] data) : base(data)
     {
     }
 
-    protected override BigInteger Part1() => RunSimulation(20, true);
+    protected override long Part1() => RunSimulation(20, false);
 
-    private BigInteger RunSimulation(int rounds, bool damageRelief)
+    protected override long Part2() => RunSimulation(10000, true);
+
+    public long RunSimulation(int rounds, bool useCustomWorryLevelCalculation)
     {
-        var monkeys = CreateMonkeysFromInput(damageRelief);
+        var monkeys = CreateMonkeysFromInput();
+
+        var worryLevelCalculation = GetWorryLevelCalculation(useCustomWorryLevelCalculation, monkeys);
 
         for (var round = 0; round < rounds; round++)
         {
             foreach (var monkey in monkeys)
             {
-                monkey.InspectAndThrowToMonkey((worryLevel, monkeyId) =>
+                monkey.WithDamageReliefCalculation(worryLevelCalculation).InspectAndThrowToMonkey((worryLevel, monkeyId) =>
                 {
                     monkeys[monkeyId].Items.Enqueue(worryLevel);
                 });
@@ -28,10 +32,22 @@ public class MonkeyInTheMiddle : ChallengeBase<BigInteger>
         return monkeys
             .OrderByDescending(m => m.Inspections)
             .Take(2)
-            .Aggregate((BigInteger)1, (prev, curr) => prev * curr.Inspections);
+            .Aggregate((long)1, (prev, curr) => prev * curr.Inspections);
     }
 
-    private List<Monkey> CreateMonkeysFromInput(bool damageRelief)
+    private Func<long, long> GetWorryLevelCalculation(bool customCalculation, List<Monkey> monkeys)
+    {
+        if (customCalculation == false)
+        {
+            return (newWorryLevel) => (long)Math.Floor((decimal)newWorryLevel / 3);
+        }
+        
+        var lcm = monkeys.Aggregate((long)1, (acc, curr) => acc * curr.Test.DivisibleBy);
+
+        return (newWorryLevel) => newWorryLevel % lcm;
+    }
+
+    private List<Monkey> CreateMonkeysFromInput()
     {
         var position = 0;
         var monkeys = new List<Monkey>();
@@ -40,7 +56,7 @@ public class MonkeyInTheMiddle : ChallengeBase<BigInteger>
         {
             var monkeyData = ChallengeDataRows.Skip(position).Take(6).ToArray();
 
-            monkeys.Add(MonkeyParser.CreateMonkey(monkeyData, damageRelief));
+            monkeys.Add(MonkeyParser.CreateMonkey(monkeyData));
 
             position += 7;
         }
@@ -49,5 +65,5 @@ public class MonkeyInTheMiddle : ChallengeBase<BigInteger>
         return monkeys;
     }
 
-    protected override BigInteger Part2() => RunSimulation(1000, false);
+    
 }
